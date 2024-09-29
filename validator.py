@@ -28,7 +28,7 @@ def get_openai_response(question, steps=None):
         messages = [
             {
                 "role": "system",
-                "content": "You are a highly knowledgeable assistant that can answer complex questions based on known information. Answer based on your training data and do not rely on external data sources."
+                "content": "You are a highly knowledgeable assistant that can answer complex questions based on known information. Answer based on your training data and browse the internet for realtime information."
             },
             {
                 "role": "user",
