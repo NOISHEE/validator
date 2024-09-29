@@ -24,33 +24,39 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 
 def get_openai_response(question, steps=None):
     try:
+        # Refine the system message
         messages = [
             {
                 "role": "system",
-                "content": "You are an expert assistant capable of answering a wide variety of fact-based questions. Provide direct and accurate answers across different topics, always ensuring precision and clarity."
+                "content": "You are a highly knowledgeable assistant that can answer complex questions based on known information. Answer based on your training data and do not rely on external data sources."
             },
             {
                 "role": "user",
                 "content": question
             }
         ]
-        
+
+        # If steps are provided, include them in the user message
         if steps:
-            messages[1]["content"] = f"The user provided the following steps to solve the question:\n{steps}\n\nThe original question is: {question}"
+            messages[1]["content"] = f"The user provided specific steps to approach the question:\n{steps}\n\nNow respond to the original question: {question}"
         
         response = openai.ChatCompletion.create(
             model="gpt-4",
             messages=messages,
-            temperature=0.5,
-            # temperature=0.2 if steps else 0.5,
-            max_tokens=1000 if steps else 2048,
+            temperature=1,  
+            max_tokens=1000,  
             top_p=1,
             frequency_penalty=0.5 if steps else 0,
             presence_penalty=0.5 if steps else 0
         )
-        return response['choices'][0]['message']['content']
+        
+        # Capture the response and validate
+        generated_response = response['choices'][0]['message']['content']
+        return generated_response
+
     except Exception as e:
         return f"Error fetching response: {str(e)}"
+
 
 def validate_input(input_value):
     return bool(input_value)
